@@ -4,6 +4,14 @@ const createRouter = require('./create.js')
 const updateRouter = require('./update.js')
 const deleteRouter = require('./delete.js')
 const router = express.Router()
+const connection = require("../db")
+
+router.get("*", (req,res,next)=>{
+    connection.query(`select * from posts`, (err,rows)=>{
+        req.list = rows;
+        next();
+    })
+})
 
 router.use('/', viewRouter)
 router.use('/create', createRouter)

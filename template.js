@@ -12,5 +12,6 @@ exports.templateHTML = (contents, body) => {
 }
 
 exports.templateList = (list) => {
-    return list.map(item => `<li><a href="/?id=${item}">${item}</a></li>`).join('');
+    return list.map(item => 
+        `<li><a href="/?id=${item.title}">${item.title}</a></li>`).join('');
 }

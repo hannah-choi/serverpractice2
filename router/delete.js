@@ -1,12 +1,15 @@
 const express = require('express');
 const fs = require('fs')
 const router = express.Router()
+const connection = require("../db")
 
 router.get('/', (req, res) => {
-    console.log(req.query.id)
-    fs.unlink(`data/${req.query.id}`, function (error) {
-        res.redirect(`/`)
-    })
+    connection.query(
+        `delete from posts where title = '${req.query.id}'`,
+        (err,rows) => {
+            res.redirect('/');
+        })
 })
 
 module.exports = router
+

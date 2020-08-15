@@ -2,27 +2,27 @@ const express = require('express');
 const fs = require('fs')
 const router = express.Router()
 const template = require('../template.js')
+const connection = require("../db")
 
 
 router.get('/', (req, res) => {
-    fs.readdir('./data', (err, list) => {
-        let listRender = template.templateList(list)
-        fs.readFile(`./data/${req.query.title}`, 'utf8', (err, data) => {
-            console.log(data)
+    let listRender = template.templateList(req.list);
+    connection.query(`select * from posts where title='${req.query.id}'`, (err,rows)=>{
             res.send(template.templateHTML(listRender,
                 `<form method="post" action="/update/file">
-                <div><input type="text" name="title" placeholder="title" value=${req.query.title}></div>
-                <div><textarea name="contents" placeholder="contents">${data}</textarea></div>
+                <div><input type="text" name="title" placeholder="title" value=${req.query.id}></div>
+                <div><textarea name="contents" placeholder="contents">${rows[0].contents}</textarea></div>
                 <div><input type="submit" value="submit"></div>
                 </form>`)
             );
-        })
-
-    })
+        })   
 })
 
 router.post('/file', (req, res) => {
-    fs.writeFile(`./data/${req.body.title}`, req.body.contents, () => {
+    console.log(`update posts set title = '${req.body.title}', contents = '${req.body.contents}' where title = '${req.body.title}'`)
+    connection.query(
+        `update posts set contents = '${req.body.contents}' where title = '${req.body.title}'`,
+        (err,rows) => {
         //res.send('success')
         res.redirect(`/?id=${req.body.title}`)
     })
